@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +16,11 @@ func main() {
 }
 
 func HandleFunc(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello World")
+	t, err := template.ParseFiles("pages/layouts/root.go.html", "pages/index.go.html")
+	if err != nil {
+		panic(err)
+	}
+	t.Execute(w, "Faisal")
 }
 
 func getEnv(key, fallback string) string {
