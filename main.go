@@ -2,30 +2,31 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
-	"os"
+
+	"go-remix-jokes/lib/env"
+	"go-remix-jokes/lib/page"
+)
+
+var (
+	homePage       = page.NewPage("pages/index.go.html")
+	jokesIndexPage = page.NewPage("pages/jokes/index.go.html")
 )
 
 func main() {
-	p := getEnv("PORT", "3000")
+	http.HandleFunc("/", Index)
+	http.HandleFunc("/jokes", JokesIndex)
+
+	p := env.GetEnv("PORT", "3000")
 	fmt.Println("Started listening on port :" + p)
-	http.HandleFunc("/", HandleFunc)
 	log.Fatalln(http.ListenAndServe(":"+p, nil))
 }
 
-func HandleFunc(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("pages/layouts/root.go.html", "pages/index.go.html")
-	if err != nil {
-		panic(err)
-	}
-	t.Execute(w, "Faisal")
+func Index(w http.ResponseWriter, r *http.Request) {
+	homePage.Render(w, "Faisal")
 }
 
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
+func JokesIndex(w http.ResponseWriter, r *http.Request) {
+	jokesIndexPage.Render(w, "Ali")
 }
