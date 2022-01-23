@@ -20,6 +20,8 @@
 # Go workspace file
 go.work
 
-
 # Produced build exec file
 go-remix-jokes
+
+# sqlite db
+test.db

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
+	"go-remix-jokes/lib/db"
 	"go-remix-jokes/lib/env"
 	"go-remix-jokes/lib/page"
 )
@@ -15,12 +15,16 @@ var (
 )
 
 func main() {
+	log.Println("Connecting and auto migrating DB...")
+	db.ConnectAndMigrateDB()
+
+	log.Println("Setting up routes...")
 	http.HandleFunc("/", Index)
 	http.HandleFunc("/jokes", JokesIndex)
 
 	p := env.GetEnv("PORT", "3000")
-	fmt.Println("Started listening on port :" + p)
-	log.Fatalln(http.ListenAndServe(":"+p, nil))
+	log.Println("Started listening on port :" + p)
+	log.Fatal(http.ListenAndServe(":"+p, nil))
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

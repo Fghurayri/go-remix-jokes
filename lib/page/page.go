@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+const ROOT_DIR = "pages/layouts/root.go.html"
+
 type Page struct {
 	PageFilePath string
 }
@@ -16,7 +18,7 @@ func NewPage(path string) *Page {
 }
 
 func (p *Page) Render(w http.ResponseWriter, data interface{}) {
-	t, err := template.ParseFiles("pages/layouts/root.go.html", p.PageFilePath)
+	t, err := template.ParseFiles(ROOT_DIR, p.PageFilePath)
 	if err != nil {
 		panic(err)
 	}
