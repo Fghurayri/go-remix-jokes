@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -9,6 +8,8 @@ import (
 	"go-remix-jokes/lib/env"
 	"go-remix-jokes/lib/models"
 	"go-remix-jokes/lib/page"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -41,12 +42,47 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
+		_, err := r.Cookie("RJ_session")
+		if err == nil {
+			http.Redirect(w, r, "/jokes", http.StatusFound)
+			return
+		}
 		loginPage.Render(w, nil)
 
 	case http.MethodPost:
-		r.ParseForm()
-		log.Println(r.PostForm)
-		loginPage.Render(w, nil)
+		err := r.ParseForm()
+		if err != nil {
+			panic(err.Error())
+		}
+
+		username := r.FormValue("username")
+		password := r.FormValue("password")
+
+		var user models.User
+		err = db.DB.Where("username = ?", username).First(&user).Error
+		if err != nil {
+			log.Println("Error fetching the user", err.Error())
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			return
+		}
+
+		err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+		if err != nil {
+			log.Println("Error comparing the hash", err.Error())
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			return
+		}
+
+		cookie := &http.Cookie{
+			Name:     "RJ_session",
+			Value:    "temp stuff",
+			Path:     "/",
+			MaxAge:   60 * 60 * 24 * 30,
+			HttpOnly: true,
+		}
+
+		http.SetCookie(w, cookie)
+		http.Redirect(w, r, "/jokes", http.StatusFound)
 
 	default:
 		w.WriteHeader(http.StatusNotFound)
@@ -57,6 +93,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Register(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
+		_, err := r.Cookie("RJ_session")
+		if err == nil {
+			http.Redirect(w, r, "/jokes", http.StatusFound)
+			return
+		}
 		registerPage.Render(w, nil)
 
 	case http.MethodPost:
@@ -65,27 +106,57 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 
-		email := r.FormValue("email")
+		username := r.FormValue("username")
 		password := r.FormValue("password")
 
-		u := &models.User{}
-		err = u.CreateUser(email, password)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 		if err != nil {
 			panic(err.Error())
 		}
 
+		err = db.DB.Create(&models.User{
+			Username:     username,
+			PasswordHash: string(hashedPassword),
+		}).Error
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		cookie := &http.Cookie{
+			Name:     "RJ_session",
+			Value:    "temp stuff",
+			Path:     "/",
+			MaxAge:   60 * 60 * 24 * 30,
+			HttpOnly: true,
+		}
+
+		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/jokes", http.StatusFound)
 
 	default:
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Not found :("))
+		http.Error(w, "not found :(", http.StatusNotFound)
 	}
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "WIP")
+	cookie := &http.Cookie{
+		Name:     "RJ_session",
+		Value:    "temp stuff",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, cookie)
+	http.Redirect(w, r, "/jokes", http.StatusFound)
 }
 
 func JokesIndex(w http.ResponseWriter, r *http.Request) {
+	_, err := r.Cookie("RJ_session")
+	if err != nil {
+		http.Redirect(w, r, "/auth/login", http.StatusFound)
+	}
 	jokesIndexPage.Render(w, "Ali")
 }
