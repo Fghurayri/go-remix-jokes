@@ -7,9 +7,7 @@ import (
 	"go-remix-jokes/lib/models"
 )
 
-var DB *gorm.DB
-
-func ConnectAndMigrateDB() {
+func Init() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database: " + err.Error())
@@ -24,5 +22,5 @@ func ConnectAndMigrateDB() {
 		panic("failed to migrate models " + err.Error())
 	}
 
-	DB = db
+	return db
 }
