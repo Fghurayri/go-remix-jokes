@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"go-remix-jokes/lib/db"
-	"go-remix-jokes/lib/handler"
+	"go-remix-jokes/lib/handlers"
 	"go-remix-jokes/lib/utils"
 )
 
@@ -14,7 +14,7 @@ func main() {
 	db := db.Init()
 
 	log.Println("Setting up handlers...")
-	handler.Init(db)
+	handlers.Init(db)
 
 	p := utils.GetEnv("PORT", "3000")
 	log.Println("Started listening on port :" + p)
