@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-const ROOT_LAYOUT_FILE = "pages/layouts/root.go.html"
-const NAV_LAYOUT_FILE = "pages/layouts/nav.go.html"
+const ROOT_LAYOUT_FILE = "html/layouts/root.go.html"
+const NAV_LAYOUT_FILE = "html/layouts/nav.go.html"
 
 type Page struct {
 	PageFilePath string

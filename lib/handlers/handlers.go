@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	homePage       = utils.NewPage("pages/index.go.html")
-	jokesIndexPage = utils.NewPage("pages/jokes/index.go.html")
-	loginPage      = utils.NewPage("pages/auth/login.go.html")
-	registerPage   = utils.NewPage("pages/auth/register.go.html")
+	homePage       = utils.NewPage("html/index.go.html")
+	jokesIndexPage = utils.NewPage("html/jokes/index.go.html")
+	loginPage      = utils.NewPage("html/auth/login.go.html")
+	registerPage   = utils.NewPage("html/auth/register.go.html")
 )
 
 type Handler struct {
