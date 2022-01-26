@@ -20,7 +20,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/jokes", http.StatusFound)
 			return
 		}
-		loginPage.Render(w, nil)
+		loginPage.Render(w, r, nil)
 
 	case http.MethodPost:
 		username, password := parseAuthForm(r)
@@ -51,7 +51,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/jokes", http.StatusFound)
 			return
 		}
-		registerPage.Render(w, nil)
+		registerPage.Render(w, r, nil)
 
 	case http.MethodPost:
 		username, password := parseAuthForm(r)

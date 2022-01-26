@@ -10,5 +10,5 @@ var (
 )
 
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
-	homePage.Render(w, "Faisal")
+	homePage.Render(w, r, nil)
 }

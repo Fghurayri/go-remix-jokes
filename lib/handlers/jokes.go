@@ -13,5 +13,5 @@ func (h *Handler) JokesIndex(w http.ResponseWriter, r *http.Request) {
 	if !utils.IsSignedIn(r) {
 		http.Redirect(w, r, "/auth/login", http.StatusFound)
 	}
-	jokesIndexPage.Render(w, "Ali")
+	jokesIndexPage.Render(w, r, nil)
 }
