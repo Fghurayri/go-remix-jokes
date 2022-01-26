@@ -8,6 +8,11 @@ import (
 	"go-remix-jokes/lib/utils"
 )
 
+var (
+	loginPage    = utils.NewPage("html/auth/login.go.html")
+	registerPage = utils.NewPage("html/auth/register.go.html")
+)
+
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:

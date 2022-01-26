@@ -1,17 +1,9 @@
 package handlers
 
 import (
-	"go-remix-jokes/lib/utils"
 	"net/http"
 
 	"gorm.io/gorm"
-)
-
-var (
-	homePage       = utils.NewPage("html/index.go.html")
-	jokesIndexPage = utils.NewPage("html/jokes/index.go.html")
-	loginPage      = utils.NewPage("html/auth/login.go.html")
-	registerPage   = utils.NewPage("html/auth/register.go.html")
 )
 
 type Handler struct {
