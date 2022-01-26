@@ -25,17 +25,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		username, password := parseAuthForm(r)
 
-		var user models.User
-		err := user.GetUserByUsername(h.DB, username)
-		if err != nil {
-			log.Println("Error fetching the user", err.Error())
-			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-			return
+		u := &models.User{
+			Username: username,
 		}
-
-		err = utils.CompareHashAndPassword(user.PasswordHash, password)
+		err := u.VerifyCredentials(h.DB, password)
 		if err != nil {
-			log.Println("Error comparing the hash", err.Error())
+			log.Println("Error logging in the user", err.Error())
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			return
 		}
@@ -61,16 +56,10 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		username, password := parseAuthForm(r)
 
-		hashedPassword, err := utils.GenerateHashFromPassword(password)
-		if err != nil {
-			panic(err.Error())
+		u := &models.User{
+			Username: username,
 		}
-
-		user := &models.User{
-			Username:     username,
-			PasswordHash: string(hashedPassword),
-		}
-		err = user.CreateUser(h.DB)
+		err := u.Create(h.DB, password)
 		if err != nil {
 			panic(err.Error())
 		}
