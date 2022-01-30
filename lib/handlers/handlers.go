@@ -26,7 +26,8 @@ func Init(db *gorm.DB) {
 	http.HandleFunc("/auth/logout", h.Logout)
 
 	// Jokes
-	http.HandleFunc("/jokes", h.JokesIndex)
+	http.HandleFunc("/jokes", h.Jokes)
+	http.HandleFunc("/jokes/", h.Joke)
 }
 
 func NotFoundResponse(w http.ResponseWriter) {

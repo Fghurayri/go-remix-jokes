@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"go-remix-jokes/lib/models"
 	"go-remix-jokes/lib/utils"
@@ -35,7 +36,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		cookie := utils.CreateCookie()
+		cookie := utils.CreateCookie(strconv.FormatUint(uint64(u.ID), 10))
 		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/jokes", http.StatusFound)
 
@@ -64,7 +65,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 
-		cookie := utils.CreateCookie()
+		cookie := utils.CreateCookie(strconv.FormatUint(uint64(u.ID), 10))
 		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/jokes", http.StatusFound)
 

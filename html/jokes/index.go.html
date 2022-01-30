@@ -1,3 +1,16 @@
 {{define "inner"}}
-<p class="text-blue-600">This is the jokes index page</p>
+<form action="/jokes" method="post">
+  <input name="name" placeholder="name">
+  <input name="content" placeholder="content">
+  <button type="submit">Add</button>
+</form>
+<div>
+  <ul>
+    {{range $joke := .Jokes}}
+    <li>
+      {{$joke.Name}} - {{$joke.Content}}
+    </li>
+    {{end}}
+  </ul>
+</div>
 {{end}}

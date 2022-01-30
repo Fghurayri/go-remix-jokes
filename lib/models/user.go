@@ -35,3 +35,7 @@ func (u *User) VerifyCredentials(db *gorm.DB, password string) error {
 	}
 	return nil
 }
+
+func (u *User) GetById(db *gorm.DB) error {
+	return db.Where("id = ?", u.ID).First(&u).Error
+}
