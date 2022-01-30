@@ -1,4 +1,10 @@
 {{define "inner"}}
 {{.Joke.Name}}
 {{.Joke.Content}}
+{{ if .IsOwner }}
+<form method="post">
+  <input hidden name="jid" value={{.Joke.ID}}>
+  <button type="submit">Delete</button>
+</form>
+{{ end }}
 {{end}}

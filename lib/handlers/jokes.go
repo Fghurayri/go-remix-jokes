@@ -83,19 +83,31 @@ func (h *Handler) Joke(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/jokes", http.StatusFound)
 		}
 
+		uid, _ := utils.GetUserIdFromCookie(r)
+
 		d := make(map[string]interface{})
 		d["Joke"] = j
+		d["IsOwner"] = uid == j.UserID
 
 		jokePage.Render(w, r, d)
 
-	case http.MethodPut:
+	// HTML form doesn't support DELETE method, so let's POST here.
+	case http.MethodPost:
 		if !utils.IsSignedIn(r) {
 			http.Redirect(w, r, "/auth/login", http.StatusFound)
 		}
 
-	case http.MethodDelete:
-		if !utils.IsSignedIn(r) {
-			http.Redirect(w, r, "/auth/login", http.StatusFound)
+		jidstr := parseDeleteJokeForm(r)
+
+		jid, err := strconv.ParseUint(jidstr, 10, 0)
+		if err != nil {
+			panic(err)
+		}
+
+		j := &models.Joke{Model: gorm.Model{ID: uint(jid)}}
+		err = j.Delete(h.DB)
+		if err != nil {
+			panic(err)
 		}
 
 		http.Redirect(w, r, "/jokes", http.StatusFound)
@@ -114,4 +126,15 @@ func parseAddJokeForm(r *http.Request) (string, string) {
 	content := r.FormValue("content")
 
 	return name, content
+}
+
+func parseDeleteJokeForm(r *http.Request) string {
+	err := r.ParseForm()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	jid := r.FormValue("jid")
+
+	return jid
 }
