@@ -13,6 +13,7 @@ import (
 
 var (
 	jokesIndexPage = utils.NewPage("html/jokes/index.go.html")
+	jokesNewPage   = utils.NewPage("html/jokes/new.go.html")
 	jokePage       = utils.NewPage("html/jokes/joke.go.html")
 )
 
@@ -34,6 +35,20 @@ func (h *Handler) Jokes(w http.ResponseWriter, r *http.Request) {
 		}
 
 		jokesIndexPage.Render(w, r, jd)
+
+	default:
+		NotFoundResponse(w)
+	}
+}
+
+func (h *Handler) NewJoke(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		if !utils.IsSignedIn(r) {
+			http.Redirect(w, r, "/auth/login", http.StatusFound)
+		}
+
+		jokesNewPage.Render(w, r, nil)
 
 	case http.MethodPost:
 		if !utils.IsSignedIn(r) {

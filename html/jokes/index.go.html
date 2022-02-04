@@ -1,9 +1,4 @@
 {{define "inner"}}
-<form action="/jokes" method="post">
-  <input name="name" placeholder="name">
-  <input name="content" placeholder="content">
-  <button type="submit">Add</button>
-</form>
 <div>
   <ul>
     {{range $joke := .Jokes}}

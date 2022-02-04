@@ -27,6 +27,7 @@ func Init(db *gorm.DB) {
 
 	// Jokes
 	http.HandleFunc("/jokes", h.Jokes)
+	http.HandleFunc("/jokes/new", h.NewJoke)
 	http.HandleFunc("/jokes/", h.Joke)
 }
 
