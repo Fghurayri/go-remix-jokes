@@ -1,7 +1,18 @@
 {{define "inner"}}
-<form action="/jokes/new" method="post">
-  <input name="name" placeholder="name">
-  <input name="content" placeholder="content">
-  <button type="submit">Add</button>
-</form>
+<div class="flex">
+  <div>
+    {{template "jokes" .}}
+  </div>
+  <div class="w-80 ml-4 mt-2">
+    <p class="mb-8">Add your own hilarious joke</p>
+    <form action="/jokes/new" method="post">
+      <label for="name">Name:</label>
+      <input name="name" id="name" class="p-2 bg-purple-800 text-white border border-purple-900 w-full rounded mb-4">
+      <label for="content" class="mt-4">Content:</label>
+      <textarea name="content" id="content"
+        class="p-2 bg-purple-800 text-white border border-purple-900 w-full rounded mb-4"></textarea>
+      <button class="button">Add</a>
+    </form>
+  </div>
+</div>
 {{end}}

@@ -1,0 +1,14 @@
+{{define "jokes"}}
+<div class="w-48">
+  <a href="/jokes" class="link">Get a random joke</a>
+  <p class="my-4">Here are a few more jokes to check out:</p>
+  <ul class="marker:text-white list-outside list-disc mb-4">
+    {{range $joke := .Jokes}}
+    <li class="ml-12">
+      <a href="jokes/{{$joke.ID}}" class="link">{{$joke.Name}}</a>
+    </li>
+    {{end}}
+  </ul>
+  <a href="/jokes/new" class="button">Add your own</a>
+</div>
+{{end}}

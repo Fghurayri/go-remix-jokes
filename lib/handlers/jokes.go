@@ -4,9 +4,11 @@ import (
 	"go-remix-jokes/lib/models"
 	"go-remix-jokes/lib/utils"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -34,6 +36,7 @@ func (h *Handler) Jokes(w http.ResponseWriter, r *http.Request) {
 			jokesIndexPage.Render(w, r, jd)
 		}
 
+		jd["RandomJoke"] = getRandomJoke(js)
 		jokesIndexPage.Render(w, r, jd)
 
 	default:
@@ -48,7 +51,17 @@ func (h *Handler) NewJoke(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/auth/login", http.StatusFound)
 		}
 
-		jokesNewPage.Render(w, r, nil)
+		j := &models.Joke{}
+		var js []models.Joke
+		jd := make(map[string]interface{})
+		jd["Jokes"] = &js
+
+		err := j.GetAll(h.DB, &js)
+		if err != nil {
+			jokesIndexPage.Render(w, r, jd)
+		}
+
+		jokesNewPage.Render(w, r, jd)
 
 	case http.MethodPost:
 		if !utils.IsSignedIn(r) {
@@ -152,4 +165,9 @@ func parseDeleteJokeForm(r *http.Request) string {
 	jid := r.FormValue("jid")
 
 	return jid
+}
+
+func getRandomJoke(js []models.Joke) models.Joke {
+	rand.Seed(time.Now().Unix()) // initialize global pseudo random generator
+	return js[rand.Intn(len(js))]
 }

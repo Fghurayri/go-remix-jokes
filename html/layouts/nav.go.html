@@ -1,12 +1,15 @@
 {{define "nav"}}
-<nav>
-  <a href="/">Home</a>
+<nav class="px-8 py-4 border-b border-purple-400 flex justify-between items-center">
+  <a href="/jokes" class="text-4xl">J🤪KES</a>
   {{ if .IsSignedIn }}
-  <a href="/jokes">Jokes</a>
-  <a href="/auth/logout">Logout</a>
+  <a href="/auth/logout" class="button">
+    Logout
+  </a>
   {{ else }}
-  <a href="/auth/login">Login</a>
-  <a href="/auth/register">Register</a>
+  <div>
+    <a href="/auth/login">Login</a>
+    <a href="/auth/register">Register</a>
+  </div>
   {{ end }}
 </nav>
 {{end}}

@@ -1,11 +1,12 @@
 {{define "inner"}}
-<div>
-  <ul>
-    {{range $joke := .Jokes}}
-    <li>
-      <a href="jokes/{{$joke.ID}}">{{$joke.Name}} - {{$joke.Content}}</a>
-    </li>
-    {{end}}
-  </ul>
+<div class="flex">
+  <div>
+    {{template "jokes" .}}
+  </div>
+  <div class="ml-4 mt-2">
+    <p>Here's a random joke:</p>
+    <p class="my-4">{{.RandomJoke.Content}}</p>
+    <a href="/jokes/{{.RandomJoke.ID}}" class="link">"{{.RandomJoke.Name}}" Permalink</a>
+  </div>
 </div>
 {{end}}
