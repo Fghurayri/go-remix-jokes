@@ -10,59 +10,37 @@ import (
 )
 
 var (
-	loginPage    = utils.NewPage("html/auth/login.go.html")
-	registerPage = utils.NewPage("html/auth/register.go.html")
+	authPage = utils.NewPage("html/auth.go.html")
 )
 
-func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		if utils.IsSignedIn(r) {
 			http.Redirect(w, r, "/jokes", http.StatusFound)
 			return
 		}
-		loginPage.Render(w, r, nil)
+		authPage.Render(w, r, nil)
 
 	case http.MethodPost:
-		username, password := parseAuthForm(r)
+		username, password, authType := parseAuthForm(r)
 
 		u := &models.User{
 			Username: username,
 		}
-		err := u.VerifyCredentials(h.DB, password)
-		if err != nil {
-			log.Println("Error logging in the user", err.Error())
-			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-			return
-		}
 
-		cookie := utils.CreateCookie(strconv.FormatUint(uint64(u.ID), 10))
-		http.SetCookie(w, cookie)
-		http.Redirect(w, r, "/jokes", http.StatusFound)
-
-	default:
-		NotFoundResponse(w)
-	}
-}
-
-func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		if utils.IsSignedIn(r) {
-			http.Redirect(w, r, "/jokes", http.StatusFound)
-			return
-		}
-		registerPage.Render(w, r, nil)
-
-	case http.MethodPost:
-		username, password := parseAuthForm(r)
-
-		u := &models.User{
-			Username: username,
-		}
-		err := u.Create(h.DB, password)
-		if err != nil {
-			panic(err.Error())
+		if authType == "login" {
+			err := u.VerifyCredentials(h.DB, password)
+			if err != nil {
+				log.Println("Error logging in the user", err.Error())
+				http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+				return
+			}
+		} else {
+			err := u.Create(h.DB, password)
+			if err != nil {
+				panic(err.Error())
+			}
 		}
 
 		cookie := utils.CreateCookie(strconv.FormatUint(uint64(u.ID), 10))
@@ -80,7 +58,7 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/jokes", http.StatusFound)
 }
 
-func parseAuthForm(r *http.Request) (string, string) {
+func parseAuthForm(r *http.Request) (string, string, string) {
 	err := r.ParseForm()
 	if err != nil {
 		panic(err.Error())
@@ -88,6 +66,7 @@ func parseAuthForm(r *http.Request) (string, string) {
 
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+	authType := r.FormValue("auth-type")
 
-	return username, password
+	return username, password, authType
 }

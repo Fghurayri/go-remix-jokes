@@ -21,9 +21,8 @@ func Init(db *gorm.DB) {
 	http.HandleFunc("/", h.Index)
 
 	// Auth
-	http.HandleFunc("/auth/login", h.Login)
-	http.HandleFunc("/auth/register", h.Register)
-	http.HandleFunc("/auth/logout", h.Logout)
+	http.HandleFunc("/login", h.Auth)
+	http.HandleFunc("/logout", h.Logout)
 
 	// Jokes
 	http.HandleFunc("/jokes", h.Jokes)

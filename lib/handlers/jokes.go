@@ -116,6 +116,13 @@ func (h *Handler) Joke(w http.ResponseWriter, r *http.Request) {
 		d := make(map[string]interface{})
 		d["Joke"] = j
 		d["IsOwner"] = uid == j.UserID
+		var js []models.Joke
+		d["Jokes"] = &js
+
+		err = j.GetAll(h.DB, &js)
+		if err != nil {
+			jokesIndexPage.Render(w, r, d)
+		}
 
 		jokePage.Render(w, r, d)
 

@@ -2,13 +2,12 @@
 <nav class="px-8 py-4 border-b border-purple-400 flex justify-between items-center">
   <a href="/jokes" class="text-4xl">J🤪KES</a>
   {{ if .IsSignedIn }}
-  <a href="/auth/logout" class="button">
+  <a href="/logout" class="button">
     Logout
   </a>
   {{ else }}
   <div>
-    <a href="/auth/login">Login</a>
-    <a href="/auth/register">Register</a>
+    <a href="/login" class="button">Login</a>
   </div>
   {{ end }}
 </nav>

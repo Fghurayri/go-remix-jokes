@@ -1,0 +1,21 @@
+{{define "inner"}}
+<div class="flex justify-center items-center">
+  <form class="space-y-6" action="/login" method="post">
+    <div class="w-80 rounded bg-white flex flex-col p-8">
+      <div class="flex justify-center items-center mb-4">
+        <input type="radio" id="login" name="auth-type" value="login" checked>
+        <label for="login" class="text-purple-800 font-bold ml-1">Login</label>
+        <input type="radio" id="register" name="auth-type" value="register" class="ml-4">
+        <label for="register" class="text-purple-800 font-bold ml-1">Register</label>
+      </div>
+      <label for="username" class="text-sm text-purple-800">Username:</label>
+      <input required name="username" id="username"
+        class="bg-grey-200 border border-purple-800 rounded p-2 text-purple-800 mb-4">
+      <label for="password" class="text-sm text-purple-800">Password:</label>
+      <input required type="password" name="password" id="password"
+        class="bg-grey-200 border border-purple-800 rounded p-2 text-purple-800 mb-4">
+      <button class="button">Submit</button>
+    </div>
+  </form>
+</div>
+{{end}}
