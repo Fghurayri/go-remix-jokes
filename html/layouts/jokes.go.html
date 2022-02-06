@@ -5,7 +5,7 @@
   <ul class="marker:text-white list-outside list-disc mb-4">
     {{range $joke := .Jokes}}
     <li class="ml-12">
-      <a href="jokes/{{$joke.ID}}" class="link">{{$joke.Name}}</a>
+      <a href="/jokes/{{$joke.ID}}" class="link">{{$joke.Name}}</a>
     </li>
     {{end}}
   </ul>

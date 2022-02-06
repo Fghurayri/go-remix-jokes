@@ -175,6 +175,9 @@ func parseDeleteJokeForm(r *http.Request) string {
 }
 
 func getRandomJoke(js []models.Joke) models.Joke {
-	rand.Seed(time.Now().Unix()) // initialize global pseudo random generator
-	return js[rand.Intn(len(js))]
+	if len(js) > 0 {
+		rand.Seed(time.Now().Unix())
+		return js[rand.Intn(len(js))]
+	}
+	return models.Joke{}
 }
